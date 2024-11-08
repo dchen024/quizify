@@ -1,62 +1,85 @@
-import Link from "next/link"
+"use client";
 
-import { Button } from "@/components/ui/button"
+import { useState } from "react";
+import { useSearchParams } from "next/navigation";
+import Image from "next/image";
+
+import { createClient } from "@/utils/supabase/client";
+import { Button } from "@/components/ui/button";
+import { toast } from "@/hooks/use-toast";
+import { Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { login } from "@/lib/auth-actions"
-import SignInWithGoogleButton from "./SignInWithGoogleButton"
+  CardDescription,
+} from "@/components/ui/card";
 
 export function LoginForm() {
+  const [isGoogleLoading, setIsGoogleLoading] = useState<boolean>(false);
+  const supabase = createClient();
+  const searchParams = useSearchParams();
+  const next = searchParams.get("next");
+
+  async function signInWithGoogle() {
+    setIsGoogleLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback${
+            next ? `?next=${encodeURIComponent(next)}` : ""
+          }`,
+        },
+      });
+
+      if (error) {
+        throw error;
+      }
+    } catch (error) {
+      toast({
+        title: "Please try again.",
+        description: "There was an error logging in with Google.",
+        variant: "destructive",
+      });
+      setIsGoogleLoading(false);
+    }
+  }
+
   return (
-    <Card className="mx-auto max-w-sm">
-      <CardHeader>
-        <CardTitle className="text-2xl">Login</CardTitle>
-        <CardDescription>
-          Enter your email below to login to your account
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form action="">
+    <main className="flex justify-center items-center min-h-screen w-full">
+      <Card className="w-[380px]">
+        <CardHeader>
+          <CardTitle>Login</CardTitle>
+          <CardDescription>Login to your account</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form>
             <div className="grid gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  placeholder="m@example.com"
-                  required
-                />
-              </div>
-              <div className="grid gap-2">
-                <div className="flex items-center">
-                  <Label htmlFor="password">Password</Label>
-                  <Link href="#" className="ml-auto inline-block text-sm underline">
-                    Forgot your password?
-                  </Link>
-                </div>
-                <Input id="password" name="password" type="password" required />
-              </div>
-              <Button type="submit" formAction={login} className="w-full">
-                Login
+              <Button
+                type="button"
+                variant="outline"
+                onClick={signInWithGoogle}
+                disabled={isGoogleLoading}
+              >
+                {isGoogleLoading ? (
+                  <Loader2 className="mr-2 size-4 animate-spin" />
+                ) : (
+                  <Image
+                    src="https://authjs.dev/img/providers/google.svg"
+                    alt="Google logo"
+                    width={20}
+                    height={20}
+                    className="mr-2"
+                  />
+                )}{" "}
+                Sign in with Google
               </Button>
-             <SignInWithGoogleButton/> 
             </div>
-        </form>
-        <div className="mt-4 text-center text-sm">
-          Don&apos;t have an account?{" "}
-          <Link href="/signup" className="underline">
-            Sign up
-          </Link>
-        </div>
-      </CardContent>
-    </Card>
+          </form>
+        </CardContent>
+      </Card>
+    </main>
   )
 }
