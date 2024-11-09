@@ -13,7 +13,7 @@ export async function middleware(request: NextRequest) {
   const protectedRoutes = ['/quizz', '/profile', '/settings', '/account'];
 
   // Define auth routes (login/signup pages)
-  const authRoutes = ['/login', '/signup', '/auth/callback'];
+  const authRoutes = ['/login', '/signup', '/auth/confirm'];
 
   // Get current pathname
   const pathname = request.nextUrl.pathname;
