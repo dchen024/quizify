@@ -32,7 +32,7 @@ export default function QuizCard({ quiz }: { quiz: Quiz }) {
         </div>
       </Link>
 
-      <div className='mt-4 flex gap-2'>
+      <div className='mt-4 flex gap-4'>
         <Button onClick={() => router.push(`/quizz/${quiz.id}/edit`)}>
           Edit
         </Button>
