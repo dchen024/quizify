@@ -1,44 +1,27 @@
 'use client';
+import { useState } from 'react';
 import LoginButton from '@/components/LoginLogoutButton';
 import { Button } from '@/components/ui/button';
-import { useState } from 'react';
 import ProgressBar from '@/components/ProgressBar';
 import { ChevronLeft, X } from 'lucide-react';
-import ResultCard from '../../components/ResultCard';
-import QuizzSubmission from '../../components/QuizzSubmission';
+import ResultCard from '@/components/ResultCard';
+import QuizzSubmission from '@/components/QuizzSubmission';
 import confetti from 'canvas-confetti';
 
-const questions = [
-  {
-    questionText: 'What is React?',
-    answerOptions: [
-      { answerText: 'Front-end framework', isCorrect: false, id: 1 },
-      { answerText: 'Back-end framework', isCorrect: false, id: 2 },
-      { answerText: 'Library', isCorrect: true, id: 3 },
-      { answerText: 'Language', isCorrect: false, id: 4 },
-    ],
-  },
-  {
-    questionText: 'What is Next JS?',
-    answerOptions: [
-      { answerText: 'Front-end framework', isCorrect: false, id: 1 },
-      { answerText: 'Back-end framework', isCorrect: false, id: 2 },
-      { answerText: 'Library', isCorrect: false, id: 3 },
-      { answerText: 'Framework', isCorrect: true, id: 4 },
-    ],
-  },
-  {
-    questionText: 'What is Tailwind CSS?',
-    answerOptions: [
-      { answerText: 'Front-end framework', isCorrect: false, id: 1 },
-      { answerText: 'Back-end framework', isCorrect: false, id: 2 },
-      { answerText: 'Library', isCorrect: false, id: 3 },
-      { answerText: 'Framework', isCorrect: true, id: 4 },
-    ],
-  },
-];
+type Quiz = {
+  id: number;
+  name: string;
+  description: string;
+  questions: {
+    questionText: string;
+    answers: {
+      answerText: string;
+      isCorrect: boolean;
+    }[];
+  }[];
+};
 
-export default function Home() {
+export default function QuizGame({ quiz }: { quiz: Quiz }) {
   const [started, setStarted] = useState<boolean>(false);
   const [currentQuestion, setCurrentQuestion] = useState<number>(0);
   const [score, setScore] = useState<number>(0);
@@ -46,6 +29,9 @@ export default function Home() {
   const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
   const [submitted, setSubmitted] = useState<boolean>(false);
   const [confettiTriggered, setConfettiTriggered] = useState<boolean>(false);
+
+  // Log the quiz data client-side
+  console.log('Quiz data in component:', quiz);
 
   const triggerConfetti = () => {
     if (!confettiTriggered) {
@@ -64,7 +50,7 @@ export default function Home() {
       return;
     }
 
-    if (currentQuestion < questions.length - 1) {
+    if (currentQuestion < quiz.questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setConfettiTriggered(false);
     } else {
@@ -75,10 +61,10 @@ export default function Home() {
     setIsCorrect(null);
   };
 
-  const handleAnswer = (answerOption: any) => {
+  const handleAnswer = (answerOption: any, index: number) => {
     if (selectedAnswer !== null) return;
 
-    setSelectedAnswer(answerOption.id);
+    setSelectedAnswer(index);
     const isCurrentCorrect = answerOption.isCorrect;
     if (isCurrentCorrect) {
       setScore(score + 1);
@@ -87,19 +73,21 @@ export default function Home() {
     setIsCorrect(isCurrentCorrect);
   };
 
-  const scorePercentage: number = Math.round((score / questions.length) * 100);
+  const scorePercentage: number = Math.round(
+    (score / quiz.questions.length) * 100
+  );
+
   if (submitted) {
     return (
       <QuizzSubmission
         score={score}
-        totalQuestions={questions.length}
+        totalQuestions={quiz.questions.length}
         scorePercentage={scorePercentage}
       />
     );
   }
 
-  // Calculate progress as a percentage
-  const progress = ((currentQuestion + 1) / questions.length) * 100;
+  const progress = ((currentQuestion + 1) / quiz.questions.length) * 100;
 
   return (
     <div className='flex flex-col flex-1'>
@@ -116,30 +104,33 @@ export default function Home() {
       </div>
       <main className='flex justify-center flex-1'>
         {!started ? (
-          <h1 className='text-3xl font-bold'>Welcome to Your AI Quiz 👋</h1>
+          <div className='text-center'>
+            <h1 className='text-3xl font-bold mb-4'>{quiz.name}</h1>
+            <p className='text-gray-600'>{quiz.description}</p>
+          </div>
         ) : (
           <div>
-            <h2 className='text-3xl font-bold'>
-              {questions[currentQuestion].questionText}
+            <h2 className='text-3xl font-bold mb-6 px-4'>
+              {quiz.questions[currentQuestion].questionText}
             </h2>
-            <div className='grid grid-cols-1 gap-6 m-6'>
-              {questions[currentQuestion].answerOptions.map((answerOption) => {
-                // Determine the variant based on the answer's correctness and user's selection
+            <div className='grid grid-cols-1 gap-4 mx-4'>
+              {quiz.questions[currentQuestion].answers.map((answer, index) => {
                 const variant =
-                  selectedAnswer === answerOption.id
+                  selectedAnswer === index
                     ? isCorrect
                       ? 'correct'
                       : 'incorrect'
-                    : 'default'; // default variant for unselected options
+                    : 'default';
 
                 return (
                   <Button
-                    onClick={() => handleAnswer(answerOption)}
-                    key={answerOption.id}
+                    onClick={() => handleAnswer(answer, index)}
+                    key={index}
                     size='lg'
                     variant={variant}
+                    className='h-auto min-h-[3rem] whitespace-normal text-left px-6 py-4 leading-normal'
                   >
-                    {answerOption.answerText}
+                    {answer.answerText}
                   </Button>
                 );
               })}
@@ -154,7 +145,7 @@ export default function Home() {
         <ResultCard
           isCorrect={isCorrect}
           correctAnswer={
-            questions[currentQuestion].answerOptions.find(
+            quiz.questions[currentQuestion].answers.find(
               (answer) => answer.isCorrect === true
             )?.answerText || ''
           }
@@ -162,7 +153,7 @@ export default function Home() {
         <Button variant='neo' size='lg' onClick={handleNext}>
           {!started
             ? 'Start'
-            : currentQuestion === questions.length - 1
+            : currentQuestion === quiz.questions.length - 1
             ? 'Submit'
             : 'Next'}
         </Button>
