@@ -1,10 +1,18 @@
 'use client';
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
+import { motion, AnimatePresence } from 'framer-motion';
+import { FaCircleCheck, FaCircleXmark } from 'react-icons/fa6';
+import { ImSpinner2 } from 'react-icons/im';
+import { cn } from '@/lib/utils';
 
 const UploadDoc = () => {
+  const router = useRouter();
   const [document, setDocument] = useState<File | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [status, setStatus] = useState<'idle' | 'generating' | 'finished'>(
+    'idle'
+  );
   const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -13,7 +21,7 @@ const UploadDoc = () => {
       setError('Please select a document to generate quiz');
       return;
     }
-    setIsLoading(true);
+    setStatus('generating');
 
     const formData = new FormData();
     formData.append('pdf', document as Blob);
@@ -25,19 +33,18 @@ const UploadDoc = () => {
       });
       const data = await res.json();
       if (res.status === 200) {
-        console.log('Generated Quiz:', {
-          name: data.quizz.name,
-          description: data.quizz.description,
-          questionCount: data.quizz.questions.length,
-          questions: data.quizz.questions,
-        });
+        setStatus('finished');
+        setTimeout(() => {
+          router.push('/quizz');
+        }, 1000);
       } else {
-        console.error('Error:', data.error);
+        setError(data.error || 'Failed to generate quiz');
+        setStatus('idle');
       }
     } catch (e) {
-      console.error('error', e);
+      setError('An error occurred while generating the quiz');
+      setStatus('idle');
     }
-    setIsLoading(false);
   };
 
   return (
@@ -64,8 +71,51 @@ const UploadDoc = () => {
           />
         </label>
         {error && <p className='text-red-600'>{error}</p>}
-        <Button type='submit' size='lg' className='mt-2' disabled={isLoading}>
-          {'Generate Quiz'}
+        <Button
+          type='submit'
+          size='lg'
+          disabled={status === 'generating'}
+          className={cn('mt-2 w-36 rounded-lg overflow-hidden')}
+        >
+          <AnimatePresence mode='wait'>
+            {status === 'idle' && (
+              <motion.span
+                key='generate'
+                exit={{
+                  opacity: 0,
+                  y: -15,
+                  transition: { duration: 0.3, type: 'spring' },
+                }}
+              >
+                Generate Quiz
+              </motion.span>
+            )}
+            {status === 'generating' && (
+              <motion.span
+                key='generating'
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 100, y: 0 }}
+                exit={{ opacity: 0, y: -15, transition: { duration: 0.3 } }}
+              >
+                <ImSpinner2 className='animate-spin' size='19' />
+              </motion.span>
+            )}
+            {status === 'finished' && (
+              <motion.span
+                key='finished'
+                initial={{ opacity: 0, y: 15, scale: 0 }}
+                animate={{
+                  opacity: 100,
+                  y: 0,
+                  scale: 1,
+                  transition: { delay: 0.1, duration: 0.4 },
+                }}
+                exit={{ opacity: 0, y: -15, transition: { duration: 0.3 } }}
+              >
+                <FaCircleCheck size='20' />
+              </motion.span>
+            )}
+          </AnimatePresence>
         </Button>
       </form>
     </div>
