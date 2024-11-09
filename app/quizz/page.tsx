@@ -55,9 +55,9 @@ export default async function QuizzesPage() {
           </Link>
         </div>
       ) : (
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr'>
+        <div className='flex flex-col gap-6 max-w-2xl mx-auto'>
           {quizzes.map((quiz) => (
-            <div className='min-w-[300px] w-full' key={quiz.id}>
+            <div key={quiz.id}>
               <QuizCard quiz={quiz} />
             </div>
           ))}
