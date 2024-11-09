@@ -27,14 +27,14 @@ export const quizRelations = relations(quizzes, ({many, one}) => ({
 
 export const questions = pgTable("questions", {
     id: serial("id").primaryKey(),
-    questionText: integer("quetion_text"),
+    questionText: text("quetion_text"),
     quizzId: integer("quizz_id"),
 })
 
 export const questionsRelations = relations(questions, ({one, many}) => ({
     quizz: one(quizzes, {
         fields: [questions.quizzId],
-        references: [quizzes.userId],
+        references: [quizzes.id],
 }),
     answers: many(questionAnswers),
 })); 
