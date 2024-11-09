@@ -3,6 +3,8 @@ import LoginButton from "@/components/LoginLogoutButton";
 import Image from "next/image";
 import { Button } from "@/components/ui/button"
 import { useState } from "react";
+import ProgressBar from "@/components/progressBar";
+import { ChevronLeft, X } from "lucide-react";
 
 const questions = [
     {
@@ -52,6 +54,14 @@ export default function Home() {
   }
   return (
     <div className="flex flex-col flex-1">
+        <div className="position-sticky top-0 z-10 py-4 w-full">
+            <header className="grid grid-cols-[auto,1fr,auto]
+            grid-flow-col items-center justify-between py-2 gap-2">
+                <Button size="icon" variant="outline"><ChevronLeft /></Button>
+                <ProgressBar value={(currentQuestion/questions.length) * 100} />
+                <Button size="icon" variant="outline"><X /></Button>
+            </header>
+        </div>
     <main className="flex justify-center flex-1">
         {!started? <h1 className="text-3xl font-bold">Welcome to Your AI Quiz 👋</h1> :
         <div>
