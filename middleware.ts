@@ -4,33 +4,41 @@ import { updateSession } from '@/utils/supabase/middleware';
 export async function middleware(request: NextRequest) {
   const { supabase, response } = await updateSession(request);
 
-  // Get the current user
+  // Check if the user is authenticated
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Get the current path
-  const path = new URL(request.url).pathname;
+  // Define protected routes that require authentication
+  const protectedRoutes = ['/quizz', '/profile', '/settings', '/account'];
 
-  // Define routes
-  const publicRoutes = ['/', '/api'];
-  const authRoutes = ['/login', '/signup', '/(auth).*'];
-  const protectedRoutes = ['/quizz', '/quizz/.*'];
+  // Define auth routes (login/signup pages)
+  const authRoutes = ['/login', '/signup', '/auth/callback'];
 
-  // If user is authenticated and trying to access auth routes, redirect to /quizz
-  if (
-    user &&
-    authRoutes.some((route) => path.match(new RegExp(`^${route}$`)))
-  ) {
-    return NextResponse.redirect(new URL('/quizz', request.url));
+  // Get current pathname
+  const pathname = request.nextUrl.pathname;
+
+  // Check if the current route is protected
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    pathname.startsWith(route)
+  );
+
+  // Check if current route is an auth route
+  const isAuthRoute = authRoutes.some((route) => pathname.startsWith(route));
+
+  if (isProtectedRoute && !user) {
+    // If trying to access protected route while not authenticated,
+    // redirect to login page with return URL
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = '/login';
+    redirectUrl.searchParams.set('redirectedFrom', pathname);
+    return NextResponse.redirect(redirectUrl);
   }
 
-  // If user is not authenticated and trying to access protected routes, redirect to /login
-  if (
-    !user &&
-    protectedRoutes.some((route) => path.match(new RegExp(`^${route}$`)))
-  ) {
-    return NextResponse.redirect(new URL('/login', request.url));
+  if (isAuthRoute && user) {
+    // If trying to access auth routes while authenticated,
+    // redirect to quizz page
+    return NextResponse.redirect(new URL('/quizz', request.url));
   }
 
   return response;
