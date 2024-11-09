@@ -1,4 +1,4 @@
-import fs from "fs";
+/*import fs from "fs";
 import pdfParse from "pdf-parse";
 
 export async function extractTextFromPDF(dataBuffer: Buffer): Promise<string> {
@@ -11,3 +11,4 @@ export async function extractTextFromPDF(dataBuffer: Buffer): Promise<string> {
         throw error; // Better to throw the error than return empty string
     }
 }
+*/
