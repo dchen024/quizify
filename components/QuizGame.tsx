@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import LoginButton from '@/components/LoginLogoutButton';
+// import LoginButton from '@/components/LoginLogoutButton';
 import { Button } from '@/components/ui/button';
 import ProgressBar from '@/components/ProgressBar';
 import { ChevronLeft, X } from 'lucide-react';
@@ -138,7 +138,7 @@ export default function QuizGame({ quiz }: { quiz: Quiz }) {
           </div>
         )}
         <div className='fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:size-auto lg:bg-none'>
-          <LoginButton />
+          {/* <LoginButton /> */}
         </div>
       </main>
       <footer className='footer pb-9 px-6 relative mb-0'>
