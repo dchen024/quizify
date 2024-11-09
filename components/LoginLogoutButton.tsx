@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { signout } from "@/lib/auth-actions";
 
+/* eslint-disable react-hooks/exhaustive-deps */
 const LoginButton = () => {
   const [user, setUser] = useState<any>(null);
   const router = useRouter();
