@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { useState } from "react";
 import ProgressBar from "@/components/progressBar";
 import { ChevronLeft, X } from "lucide-react";
+import ResultCard from "./ResultCard"
 
 const questions = [
     {
@@ -38,9 +39,11 @@ const questions = [
 ]
 
 export default function Home() {
-  const [started, setStarted] = useState(false);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-
+  const [started, setStarted] = useState<boolean>(false);
+  const [currentQuestion, setCurrentQuestion] = useState<number>(0);
+  const [score, setScore] = useState<number>(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(null);
 
   const handleNext = () => {
     if (!started) {
@@ -51,7 +54,19 @@ export default function Home() {
     if (currentQuestion < questions.length - 1) {
         setCurrentQuestion(currentQuestion + 1);
   }
+  setSelectedAnswer(null);
+  setIsCorrect(null);
   }
+
+  const handleAnswer = (answerOption: any) => {
+    setSelectedAnswer(answerOption.id);
+    const isCurrentCorrect = answerOption.isCorrect;
+    if (isCurrentCorrect) {
+        setScore(score + 1);
+    }
+    setIsCorrect(isCurrentCorrect);
+}
+
   return (
     <div className="flex flex-col flex-1">
         <div className="position-sticky top-0 z-10 py-4 w-full">
@@ -70,7 +85,7 @@ export default function Home() {
                 {
                 questions[currentQuestion].answerOptions.map(answerOption => {
                     return (
-                        <Button key={answerOption.id} size={'lg'}>{answerOption.answerText}</Button>
+                        <Button onClick={()=>handleAnswer(answerOption)} key={answerOption.id} size={'lg'}>{answerOption.answerText}</Button>
                     )
                 })
                 }
@@ -82,6 +97,7 @@ export default function Home() {
         </div>
     </main>
       <footer className="footer pb-9 px-6 relative mb-0">
+        <ResultCard isCorrect={isCorrect} correctAnswer={questions[currentQuestion].answerOptions.find(answer => answer.isCorrect === true)?.answerText || ''} />
         <Button onClick={handleNext}>{!started ? 'Start' : 'Next'}</Button>
       </footer>
       </div>
