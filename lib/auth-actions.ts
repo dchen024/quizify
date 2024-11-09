@@ -73,7 +73,7 @@ export async function signInWithGoogle() {
         access_type: 'offline',
         prompt: 'consent',
       },
-      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/quizz`,
+      redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}`,
     },
   });
 
