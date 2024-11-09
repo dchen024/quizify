@@ -1,5 +1,6 @@
 import LoginButton from "@/components/LoginLogoutButton";
 import Image from "next/image";
+import GetStartedButton from "@/components/GetStartedButton";
 import { Button } from "@/components/ui/button"
 	
 export default function Home() {
@@ -52,11 +53,8 @@ export default function Home() {
                 Easily upload class documents and let AI create custom flashcards and quizzes for you. 
                 Play in real-time with friends and classmates for an engaging learning experience.
               </p>
-              <Button 
-                className="bg-white text-[#4B0082] hover:bg-gray-100 px-8 py-6 rounded-full text-lg font-semibold"
-              >
-                Get Started
-              </Button>
+              <GetStartedButton />
+              
             </div>
           </div>
         </div>
