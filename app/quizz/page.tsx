@@ -4,23 +4,66 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button"
 import { useState } from "react";
 
+const questions = [
+    {
+        questionText: "What is React?",
+        answerOptions: [
+            { answerText: "Front-end framework", isCorrect: false, id: 1 },
+            { answerText: "Back-end framework", isCorrect: false, id: 2 },
+            { answerText: "Library", isCorrect: true, id: 3 },
+            { answerText: "Language", isCorrect: false, id: 4 },
+        ],
+    },
+    {
+        questionText: "What is Next JS?",
+        answerOptions: [
+            { answerText: "Front-end framework", isCorrect: false, id: 1 },
+            { answerText: "Back-end framework", isCorrect: false, id: 2 },
+            { answerText: "Library", isCorrect: false, id: 3 },
+            { answerText: "Framework", isCorrect: true, id: 4 },
+        ],
+    },
+    {
+        questionText: "What is Tailwind CSS?",
+        answerOptions: [
+            { answerText: "Front-end framework", isCorrect: false, id: 1 },
+            { answerText: "Back-end framework", isCorrect: false, id: 2 },
+            { answerText: "Library", isCorrect: false, id: 3 },
+            { answerText: "Framework", isCorrect: true, id: 4 },
+        ],
+    }
+
+]
+
 export default function Home() {
   const [started, setStarted] = useState(false);
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+
 
   const handleNext = () => {
-    setStarted(true);
+    if (!started) {
+        setStarted(true);
+        return;
+    }
+
+    if (currentQuestion < questions.length - 1) {
+        setCurrentQuestion(currentQuestion + 1);
+  }
   }
   return (
     <div className="flex flex-col flex-1">
     <main className="flex justify-center flex-1">
         {!started? <h1 className="text-3xl font-bold">Welcome to Your AI Quiz 👋</h1> :
         <div>
-            <h2 className="text-3xl font-bold">How well do you know NEXT JS?</h2>
+            <h2 className="text-3xl font-bold">{questions[currentQuestion].questionText}</h2>
             <div className="grid grid-cols-1 gap-6 m-6">
-                <Button>Beginner</Button>
-                <Button>Intermediate</Button>
-                <Button>Advanced</Button>
-                <Button>Expert</Button>
+                {
+                questions[currentQuestion].answerOptions.map(answerOption => {
+                    return (
+                        <Button key={answerOption.id} size={'lg'}>{answerOption.answerText}</Button>
+                    )
+                })
+                }
             </div>
         </div>
         }
