@@ -72,7 +72,7 @@ export default function Home() {
                 flashcards and quizzes for you. Play in real-time with friends
                 and classmates for an engaging learning experience.
               </p>
-              <div className='mt-6 flex justify-center items-center'>
+              <div className='mt-6 w-full'>
                 <GetStartedButton />
               </div>
             </div>
