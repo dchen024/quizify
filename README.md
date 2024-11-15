@@ -5,7 +5,7 @@
 
 ## Demo Video
 
-[![Quizify Demo Video](https://img.youtube.com/vi/yBzlTa8ETWs/0.jpg)](https://youtu.be/yBzlTa8ETWs)
+[![Watch the video](https://img.youtube.com/vi/u1ulyAsBHTA/0.jpg)](https://youtu.be/u1ulyAsBHTA)
 
 ## Project Overview
 ### Inspiration
