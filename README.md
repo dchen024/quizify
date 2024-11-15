@@ -3,6 +3,8 @@
 
 **Developed by:** Daniel, Ahmad, Samiha, and Mahamud
 
+[Devpost Project Page](https://devpost.com/software/quizify-es9ori)
+
 ## Demo Video
 
 [![Watch the video](https://img.youtube.com/vi/u1ulyAsBHTA/0.jpg)](https://youtu.be/u1ulyAsBHTA)
