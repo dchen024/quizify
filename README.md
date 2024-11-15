@@ -1,4 +1,7 @@
 # Quizify
+
+![Landing Page](quizify_landing.png)
+
 ### CUNY Queens College Knight Hackathon Fall 2024
 
 **Developed by:** Daniel, Ahmad, Samiha, and Mahamud
@@ -7,7 +10,12 @@
 
 ## Demo Video
 
-[![Watch the video](https://img.youtube.com/vi/u1ulyAsBHTA/0.jpg)](https://youtu.be/u1ulyAsBHTA)
+<div align="center">
+  <a href="https://youtu.be/u1ulyAsBHTA?si=RB8Ur6m9nZu_6vdL">
+    <img src="https://img.youtube.com/vi/u1ulyAsBHTA/0.jpg" alt="Quizify Demo Video" width="800">
+  </a>
+</div>
+
 
 ## Project Overview
 ### Inspiration
@@ -25,6 +33,9 @@ Many students face challenges organizing and processing large volumes of study m
 - **Backend:** Next.js, TypeScript
 - **Database:** Supabase (PostgreSQL)
 - **AI Integration:** OpenAI + LangChain (using the GPT-4o-mini model with structured outputs)
+
+## System Diagram
+![System Diagram](quizify_system_design.png)
 
 ### Key Features
 - **Upload Documents:** Users can upload class notes or study material.
@@ -46,13 +57,6 @@ Many students face challenges organizing and processing large volumes of study m
 ## What's Next for Quizify
 - **Real-Time Quiz Mode:** Implement a real-time mode for students to take quizzes collaboratively with friends or classmates.
 - **Group Study Support:** Facilitate group study sessions and friendly competitions to increase engagement and knowledge retention further.
-
-## Screenshots
-![Screenshot 1](link_to_screenshot1)
-![Screenshot 2](link_to_screenshot2)
-
-## System Diagram
-![System Diagram](link_to_system_diagram)
 
 ## How to Run the Project
 First, run the development server:
